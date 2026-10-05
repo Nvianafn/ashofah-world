@@ -1,65 +1,59 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
-
+import { WORLDS, useWorld } from "@/lib/world";
 export function Nav() {
   const { t, lang, setLang } = useI18n();
-  const [scrolled, setScrolled] = useState(false);
+  const { active, openWorld } = useWorld();
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const links = [
-    ["#about", t("nav.about")],
-    ["#stack", t("nav.stack")],
-    ["#projects", t("nav.projects")],
-    ["#contact", t("nav.contact")],
-  ];
-
   return (
-    <nav className={"nav" + (scrolled ? " scrolled" : "")}>
-      <div className="wrap">
+    <header className="nav">
+      <nav className="wrap" aria-label={t("navigation")}>
         <a className="brand" href="#top">
-          <span className="dot" />
-          <span>
-            ~/novian<b>.ashofah</b>
-          </span>
+          <span className="brand-pixel" aria-hidden="true">
+            A
+          </span>{" "}
+          ASHOFAH<span className="brand-domain">.ME</span>
         </a>
-        <div className={"nav-links" + (open ? " open" : "")}>
-          {links.map(([href, label]) => (
-            <a key={href} href={href} onClick={() => setOpen(false)}>
-              <span className="hash">#</span> <span>{label}</span>
+        <div id="main-navigation" className={`nav-links ${open ? "open" : ""}`}>
+          {WORLDS.map((world) => (
+            <a
+              key={world}
+              href={`#${world}`}
+              aria-current={active === world ? "location" : undefined}
+              onClick={(e) => {
+                e.preventDefault();
+                openWorld(world);
+                setOpen(false);
+              }}
+            >
+              {t(`nav.${world}`)}
             </a>
           ))}
-          <div className="lang-toggle">
-            <button
-              className={lang === "en" ? "active" : ""}
-              onClick={() => setLang("en")}
-            >
-              EN
-            </button>
-            <button
-              className={lang === "id" ? "active" : ""}
-              onClick={() => setLang("id")}
-            >
-              ID
-            </button>
-          </div>
         </div>
-        <button
-          className="nav-burger"
-          aria-label="Menu"
-          onClick={() => setOpen((v) => !v)}
-        >
-          [ {t("menu")} ]
-        </button>
-      </div>
-    </nav>
+        <div className="nav-actions">
+          <div className="lang-toggle" aria-label={t("language")}>
+            {(["en", "id"] as const).map((l) => (
+              <button
+                key={l}
+                aria-pressed={lang === l}
+                onClick={() => setLang(l)}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
+          <button
+            className="nav-burger"
+            aria-expanded={open}
+            aria-controls="main-navigation"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? "✕" : "☰"}
+            <span className="sr-only">{t("menu")}</span>
+          </button>
+        </div>
+      </nav>
+    </header>
   );
 }

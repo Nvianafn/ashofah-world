@@ -1,24 +1,28 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
-import type { CSSProperties } from "react";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const display = Space_Grotesk({
-  subsets: ["latin"],
+const display = localFont({
+  src: [
+    { path: "../public/fonts/dm-sans-400.woff2", weight: "400" },
+    { path: "../public/fonts/dm-sans-500.woff2", weight: "500" },
+    { path: "../public/fonts/dm-sans-600.woff2", weight: "600" },
+    { path: "../public/fonts/dm-sans-700.woff2", weight: "700" },
+  ],
   display: "swap",
-  variable: "--font-display",
+  variable: "--font-sans",
 });
-
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
+const pixel = localFont({
+  src: "../public/fonts/press-start-2p.woff2",
   display: "swap",
-  variable: "--font-code",
+  variable: "--font-pixel",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ashofah.me"),
   title: {
-    default: "Novian Affan Ashofah - Backend Developer & DevOps Engineer",
+    default:
+      "Ashofah World | Novian Affan Ashofah - Backend Developer & DevOps Engineer",
     template: "%s - Novian Affan Ashofah",
   },
   description:
@@ -63,17 +67,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const htmlStyle = {
-    "--font-sans": display.style.fontFamily,
-    "--font-mono": mono.style.fontFamily,
-  } as CSSProperties;
-
   return (
-    <html
-      lang="en"
-      className={display.variable + " " + mono.variable}
-      style={htmlStyle}
-    >
+    <html lang="en" className={display.variable + " " + pixel.variable}>
       <body>{children}</body>
     </html>
   );

@@ -1,38 +1,20 @@
 "use client";
-
 import { useI18n } from "@/lib/i18n";
-import { BIO, SOCIALS } from "@/lib/content";
-import { Icon } from "./Icon";
-
+import { BIO } from "@/lib/content";
 export function Footer() {
   const { t } = useI18n();
-  const year = new Date().getFullYear();
-  const socials: [string, string][] = [
-    ["github", SOCIALS.github],
-    ["linkedin", SOCIALS.linkedin],
-    ["gmail", "mailto:" + SOCIALS.email],
-  ];
   return (
     <footer className="foot">
       <div className="wrap">
-        <span className="cp">
-          {t("footBuilt")} <b>{BIO.name}</b> / {year}
+        <a className="footer-brand" href="#top">
+          ASHOFAH<span> WORLD</span>
+        </a>
+        <span>
+          © {new Date().getFullYear()} {BIO.name}
         </span>
-        <div className="foot-soc">
-          {socials
-            .filter((s) => s[1])
-            .map((s) => (
-              <a
-                key={s[0]}
-                href={s[1]}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s[0]}
-              >
-                <Icon slug={s[0]} />
-              </a>
-            ))}
-        </div>
+        <a className="back-top" href="#top">
+          {t("backTop")} ↑
+        </a>
       </div>
     </footer>
   );

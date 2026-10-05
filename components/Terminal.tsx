@@ -8,12 +8,12 @@ import { Icon } from "./Icon";
 
 function esc(s: string) {
   return String(s).replace(/[&<>]/g, (c) =>
-    c === "&" ? "&amp;" : c === "<" ? "&lt;" : "&gt;"
+    c === "&" ? "&amp;" : c === "<" ? "&lt;" : "&gt;",
   );
 }
 
-export function Terminal() {
-  const { lang } = useI18n();
+export function Terminal({ onHire }: { onHire?: () => void }) {
+  const { lang, t } = useI18n();
   const FS = useMemo(() => buildFS(lang), [lang]);
   const [lines, setLines] = useState<string[]>([]);
   const [value, setValue] = useState("");
@@ -57,24 +57,59 @@ export function Terminal() {
   // buffer collects output lines for a single command run
   let buf: string[] = [];
   const push = (html: string, cls?: string) =>
-    buf.push('<div class="term-line' + (cls ? " " + cls : "") + '">' + html + "</div>");
+    buf.push(
+      '<div class="term-line' + (cls ? " " + cls : "") + '">' + html + "</div>",
+    );
   const pushText = (arr: string[]) => arr.forEach((l) => push(esc(l)));
 
   const COMMANDS: Record<string, (args: string[]) => void> = {
     help: () => {
       const rows: [string, string][] = [
-        ["help", "show this list"],
-        ["ls [-la]", "list files (a: show hidden)"],
-        ["cd <dir>", "change directory (.. and ~ work)"],
-        ["cat <file>", "print a file"],
-        ["pwd", "print working directory"],
-        ["tree", "show the whole tree"],
-        ["open <project>", "open a project link"],
-        ["whoami", "who is this"],
-        ["clear", "clear the screen"],
-        ["sudo hire-me", "the good ending"],
+        [
+          "help",
+          lang === "id" ? "tampilkan daftar perintah" : "show this list",
+        ],
+        [
+          "ls [-la]",
+          lang === "id"
+            ? "daftar file (a: tampilkan file tersembunyi)"
+            : "list files (a: show hidden)",
+        ],
+        [
+          "cd <dir>",
+          lang === "id"
+            ? "pindah direktori (.. dan ~ tersedia)"
+            : "change directory (.. and ~ work)",
+        ],
+        ["cat <file>", lang === "id" ? "baca isi file" : "print a file"],
+        [
+          "pwd",
+          lang === "id"
+            ? "tampilkan direktori saat ini"
+            : "print working directory",
+        ],
+        [
+          "tree",
+          lang === "id"
+            ? "tampilkan struktur filesystem"
+            : "show the whole tree",
+        ],
+        [
+          "open <project>",
+          lang === "id" ? "buka tautan proyek" : "open a project link",
+        ],
+        ["whoami", lang === "id" ? "kenalan dengan player" : "who is this"],
+        ["clear", lang === "id" ? "bersihkan layar" : "clear the screen"],
+        [
+          "sudo hire-me",
+          lang === "id" ? "akhir yang bagus" : "the good ending",
+        ],
       ];
-      push('<span class="t-dim">available commands</span>');
+      push(
+        '<span class="t-dim">' +
+          (lang === "id" ? "perintah tersedia" : "available commands") +
+          "</span>",
+      );
       rows.forEach((r) =>
         push(
           '  <span class="t-green">' +
@@ -83,24 +118,30 @@ export function Terminal() {
             "&nbsp;".repeat(Math.max(1, 16 - r[0].length)) +
             '<span class="t-dim">' +
             r[1] +
-            "</span>"
-        )
+            "</span>",
+        ),
       );
     },
     ls: (args) => {
       const showHidden = args.some((a) => a[0] === "-" && a.includes("a"));
       const target = args.filter((a) => a[0] !== "-")[0];
       const res = resolveTarget(target);
-      if (!res.node) return push("ls: no such directory: " + esc(target || ""), "t-red");
-      if (res.node.type !== "dir") return push('<span class="t-cyan">' + esc(target) + "</span>");
+      if (!res.node)
+        return push("ls: no such directory: " + esc(target || ""), "t-red");
+      if (res.node.type !== "dir")
+        return push('<span class="t-cyan">' + esc(target) + "</span>");
       let names = Object.keys(res.node.children).filter(
-        (k) => showHidden || !res.node!.type || !(res.node as FsDir).children[k].hidden
+        (k) =>
+          showHidden ||
+          !res.node!.type ||
+          !(res.node as FsDir).children[k].hidden,
       );
       if (showHidden) names = [".", ".."].concat(names);
       const dir = res.node as FsDir;
       const out = names
         .map((k) => {
-          if (k === "." || k === "..") return '<span class="t-blue">' + k + "</span>";
+          if (k === "." || k === "..")
+            return '<span class="t-blue">' + k + "</span>";
           const ch = dir.children[k];
           return ch && ch.type === "dir"
             ? '<span class="t-blue">' + k + "/</span>"
@@ -111,8 +152,10 @@ export function Terminal() {
     },
     cd: (args) => {
       const res = resolveTarget(args[0] || "~");
-      if (!res.node) return push("cd: no such directory: " + esc(args[0] || ""), "t-red");
-      if (res.node.type !== "dir") return push("cd: not a directory: " + esc(args[0]), "t-red");
+      if (!res.node)
+        return push("cd: no such directory: " + esc(args[0] || ""), "t-red");
+      if (res.node.type !== "dir")
+        return push("cd: not a directory: " + esc(args[0]), "t-red");
       cwd.current = res.parts;
     },
     cat: (args) => {
@@ -124,11 +167,17 @@ export function Terminal() {
       pushText(res.node.content);
     },
     pwd: () =>
-      push("/home/" + user + (cwd.current.length ? "/" + cwd.current.join("/") : "")),
+      push(
+        "/home/" +
+          user +
+          (cwd.current.length ? "/" + cwd.current.join("/") : ""),
+      ),
     tree: () => {
       push('<span class="t-blue">~</span>');
       const walk = (node: FsDir, prefix: string) => {
-        const keys = Object.keys(node.children).filter((k) => !node.children[k].hidden);
+        const keys = Object.keys(node.children).filter(
+          (k) => !node.children[k].hidden,
+        );
         keys.forEach((k, i) => {
           const last = i === keys.length - 1;
           const ch = node.children[k];
@@ -141,9 +190,16 @@ export function Terminal() {
               "</span>" +
               (isDir
                 ? '<span class="t-blue">' + k + "/</span>"
-                : '<span class="t-cyan">' + k + "</span>")
+                : '<span class="t-cyan">' + k + "</span>"),
           );
-          if (isDir) walk(ch as FsDir, prefix + (last ? "\u00A0\u00A0\u00A0\u00A0" : "\u2502\u00A0\u00A0\u00A0"));
+          if (isDir)
+            walk(
+              ch as FsDir,
+              prefix +
+                (last
+                  ? "\u00A0\u00A0\u00A0\u00A0"
+                  : "\u2502\u00A0\u00A0\u00A0"),
+            );
         });
       };
       walk(FS, "");
@@ -154,7 +210,10 @@ export function Terminal() {
       const p = PROJECTS.find((x) => x.slug === slug.replace(/\/$/, ""));
       if (!p) return push("open: unknown project: " + esc(slug), "t-red");
       const url = p.live || p.repo;
-      push('opening <span class="t-cyan">' + esc(url) + "</span> ...", "t-green");
+      push(
+        'opening <span class="t-cyan">' + esc(url) + "</span> ...",
+        "t-green",
+      );
       try {
         window.open(url, "_blank", "noopener");
       } catch {}
@@ -165,7 +224,7 @@ export function Terminal() {
           esc(BIO.name) +
           '</span> <span class="t-dim">(' +
           esc(L(BIO.role, lang)) +
-          ")</span>"
+          ")</span>",
       );
       push(esc(L(BIO.tagline, lang)));
     },
@@ -175,13 +234,17 @@ export function Terminal() {
     },
     sudo: (args) => {
       if (args.join(" ") === "hire-me") {
-        push('<span class="t-yellow">[sudo] password for guest:</span> <span class="t-dim">************</span>');
+        push(
+          '<span class="t-yellow">[sudo] password for guest:</span> <span class="t-dim">************</span>',
+        );
         push('<span class="t-green">access granted. good choice.</span>');
-        push('redirecting you to the hire section ...', "t-dim");
-        setTimeout(() => {
-          const el = document.getElementById("contact");
-          if (el) el.scrollIntoView({ behavior: "smooth" });
-        }, 650);
+        push(
+          lang === "id"
+            ? "membuka checkpoint kontak ..."
+            : "opening the contact checkpoint ...",
+          "t-dim",
+        );
+        onHire?.();
         return;
       }
       push("sudo: command not found: " + esc(args.join(" ")), "t-red");
@@ -199,7 +262,11 @@ export function Terminal() {
       const cmd = parts[0];
       const args = parts.slice(1);
       if (COMMANDS[cmd]) COMMANDS[cmd](args);
-      else push('command not found: ' + esc(cmd) + '. type "help" for the list.', "t-red");
+      else
+        push(
+          "command not found: " + esc(cmd) + '. type "help" for the list.',
+          "t-red",
+        );
     }
     if (buf[0] === "__CLEAR__") {
       setLines([]);
@@ -211,10 +278,12 @@ export function Terminal() {
 
   const welcome = () => {
     buf = [];
-    push('<span class="t-dim">Last login: session started on ashofah.me</span>');
+    push(
+      '<span class="t-dim">Last login: session started on ashofah.me</span>',
+    );
     push('<span class="t-green">\u256D\u2500 welcome to my machine.</span>');
     push(
-      '<span class="t-dim">\u2570\u2500 type</span> <span class="t-green">help</span> <span class="t-dim">to list commands, or</span> <span class="t-green">tree</span> <span class="t-dim">to see everything.</span>'
+      '<span class="t-dim">\u2570\u2500 type</span> <span class="t-green">help</span> <span class="t-dim">to list commands, or</span> <span class="t-green">tree</span> <span class="t-dim">to see everything.</span>',
     );
     push("");
     COMMANDS.whoami([]);
@@ -230,7 +299,8 @@ export function Terminal() {
   }, [lang]);
 
   useEffect(() => {
-    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+    if (bodyRef.current)
+      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [lines]);
 
   const onKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -249,7 +319,7 @@ export function Terminal() {
         hIdx.current++;
         setValue(history.current[hIdx.current] || "");
       }
-    } else if (e.key === "Tab") {
+    } else if (e.key === "Tab" && !e.shiftKey) {
       e.preventDefault();
       autocomplete();
     }
@@ -261,7 +331,7 @@ export function Terminal() {
     const dir = nodeAt(cwd.current);
     if (!dir || dir.type !== "dir") return;
     const matches = Object.keys(dir.children).filter(
-      (k) => !dir.children[k].hidden && k.indexOf(frag) === 0
+      (k) => !dir.children[k].hidden && k.indexOf(frag) === 0,
     );
     if (matches.length === 1) {
       parts[parts.length - 1] = matches[0];
@@ -282,7 +352,8 @@ export function Terminal() {
     <div
       className="term"
       onClick={(e) => {
-        if (!(e.target as HTMLElement).closest("a,button")) inputRef.current?.focus();
+        if (!(e.target as HTMLElement).closest("a,button"))
+          inputRef.current?.focus();
       }}
     >
       <div className="term-bar">
@@ -301,10 +372,7 @@ export function Terminal() {
         ))}
       </div>
       <div className="term-input-row">
-        <span
-          className="ps"
-          dangerouslySetInnerHTML={mk(promptHTML())}
-        />
+        <span className="ps" dangerouslySetInnerHTML={mk(promptHTML())} />
         <input
           ref={inputRef}
           value={value}
@@ -313,7 +381,7 @@ export function Terminal() {
           autoComplete="off"
           autoCapitalize="off"
           spellCheck={false}
-          aria-label="terminal input"
+          aria-label={t("terminal.input")}
         />
       </div>
       <div className="term-chips">
