@@ -1,10 +1,11 @@
 "use client";
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { useI18n } from "@/lib/i18n";
 import { WORLDS, useWorld, type World } from "@/lib/world";
 import { PixelCharacter } from "./PixelCharacter";
 
 const BLOCKS = [235, 410, 585, 760];
+const PIPE_X = 940;
 export function GameWorld({
   arenaRef,
   started,
@@ -18,7 +19,23 @@ export function GameWorld({
   const { openWorld, visited, setTerminalOpen, playSound } = useWorld();
   const [pose, setPose] = useState({ x: 100, y: 0, facing: 1, moving: false });
   const [bumped, setBumped] = useState<World | null>(null);
-  const physics = useRef({ x: 100, y: 0, velocity: 0, facing: 1 });
+  const [burst, setBurst] = useState<World | null>(null);
+  const [coins, setCoins] = useState<World[]>([]);
+  const awarded = useRef(new Set<World>());
+  const inner = useRef<HTMLDivElement>(null);
+  const pipe = useRef<HTMLButtonElement>(null);
+  const player = useRef<HTMLDivElement>(null);
+  const physics = useRef({ x: 100, y: 0, velocity: 0, facing: 1, grounded: true });
+  const pipeBounds = useCallback(() => {
+    const width = inner.current?.clientWidth || 1000;
+    const half = ((pipe.current?.offsetWidth || 74) / width) * 500;
+    return {
+      left: PIPE_X - half,
+      right: PIPE_X + half,
+      height: pipe.current?.offsetHeight || 84,
+      playerHalf: ((player.current?.offsetWidth || 48) / width) * 500,
+    };
+  }, []);
   const keys = useRef(new Set<string>());
   const frame = useRef<number | null>(null);
   const last = useRef(0);
@@ -26,6 +43,11 @@ export function GameWorld({
   latest.current = { openWorld, playSound };
   const hit = (world: World) => {
     setBumped(world);
+    if (!awarded.current.has(world)) {
+      awarded.current.add(world);
+      setCoins(Array.from(awarded.current));
+      setBurst(world);
+    }
     latest.current.playSound();
     latest.current.openWorld(world);
   };
@@ -36,21 +58,46 @@ export function GameWorld({
     const timer = setTimeout(() => setBumped(null), 350);
     return () => clearTimeout(timer);
   }, [bumped]);
+  useEffect(() => {
+    if (!burst) return;
+    const timer = setTimeout(() => setBurst(null), 850);
+    return () => clearTimeout(timer);
+  }, [burst]);
   const tickRef = useRef<(now: number) => void>(() => {});
   tickRef.current = (now) => {
-    const dt = Math.min((now - last.current) / 1000 || 0.016, 0.033);
+    // A callback queued during a frame can receive a timestamp preceding wake().
+    // Clamp both ends so the first jump step never moves backwards into the floor.
+    const dt = Math.max(0.001, Math.min((now - last.current) / 1000 || 0.016, 0.033));
     last.current = now;
     const p = physics.current;
+    const bounds = pipeBounds();
+    const previousX = p.x;
+    const previousY = p.y;
     const direction =
       Number(keys.current.has("right")) - Number(keys.current.has("left"));
     if (direction) {
       p.x = Math.max(24, Math.min(970, p.x + direction * 220 * dt));
       p.facing = direction;
     }
+    // Coordinates along the level are normalized; object sizes remain real CSS pixels.
+    if (p.y < bounds.height && p.y + 64 > 0) {
+      if (previousX <= bounds.left - bounds.playerHalf && p.x > bounds.left - bounds.playerHalf)
+        p.x = bounds.left - bounds.playerHalf;
+      if (previousX >= bounds.right + bounds.playerHalf && p.x < bounds.right + bounds.playerHalf)
+        p.x = bounds.right + bounds.playerHalf;
+    }
+    const overPipe = p.x + bounds.playerHalf > bounds.left && p.x - bounds.playerHalf < bounds.right;
+    const support = overPipe && p.y >= bounds.height - 0.01 ? bounds.height : 0;
+    if (p.grounded && Math.abs(p.y - support) > 0.01) p.grounded = false;
     const previousTop = p.y + 64;
-    if (p.y > 0 || p.velocity > 0) {
+    if (!p.grounded) {
       p.y += p.velocity * dt;
       p.velocity -= 1400 * dt;
+    }
+    if (p.velocity <= 0 && overPipe && previousY >= bounds.height && p.y <= bounds.height) {
+      p.y = bounds.height;
+      p.velocity = 0;
+      p.grounded = true;
     }
     if (p.velocity > 0 && previousTop <= 112 && p.y + 64 >= 112) {
       const block = BLOCKS.findIndex((x) => Math.abs(x - p.x) < 38);
@@ -64,9 +111,10 @@ export function GameWorld({
     if (p.y <= 0) {
       p.y = 0;
       p.velocity = 0;
+      p.grounded = true;
     }
     setPose({ x: p.x, y: p.y, facing: p.facing, moving: !!direction });
-    if (keys.current.size || p.y > 0)
+    if (keys.current.size || !p.grounded)
       frame.current = requestAnimationFrame((time) => tickRef.current(time));
     else {
       frame.current = null;
@@ -79,15 +127,19 @@ export function GameWorld({
       frame.current = requestAnimationFrame((time) => tickRef.current(time));
     }
   };
-  const stop = () => {
+  const stop = useCallback(() => {
     keys.current.clear();
     if (frame.current !== null) cancelAnimationFrame(frame.current);
     frame.current = null;
     last.current = 0;
-    physics.current.y = 0;
-    physics.current.velocity = 0;
-    setPose((p) => ({ ...p, y: 0, moving: false }));
-  };
+    const p = physics.current;
+    const bounds = pipeBounds();
+    const overPipe = p.x + bounds.playerHalf > bounds.left && p.x - bounds.playerHalf < bounds.right;
+    p.y = overPipe && p.y >= bounds.height ? bounds.height : 0;
+    p.velocity = 0;
+    p.grounded = true;
+    setPose((pose) => ({ ...pose, y: p.y, moving: false }));
+  }, [pipeBounds]);
   useEffect(() => {
     const pause = () => {
       if (document.hidden) stop();
@@ -99,7 +151,7 @@ export function GameWorld({
       document.removeEventListener("visibilitychange", pause);
       if (frame.current !== null) cancelAnimationFrame(frame.current);
     };
-  }, []);
+  }, [stop]);
   const move = (direction: "left" | "right") => {
     onStart();
     keys.current.add(direction);
@@ -107,13 +159,54 @@ export function GameWorld({
   };
   const jump = () => {
     onStart();
-    if (physics.current.y === 0) {
+    if (physics.current.grounded) {
+      physics.current.grounded = false;
       physics.current.velocity = 520;
-      playSound("jump");
+      latest.current.playSound("jump");
       wake();
     }
   };
+  const enterPipe = () => {
+    const p = physics.current;
+    const bounds = pipeBounds();
+    if (p.grounded && p.y === bounds.height && Math.abs(p.x - PIPE_X) < (bounds.right - bounds.left) / 2)
+      setTerminalOpen(true);
+  };
   const release = (direction: string) => keys.current.delete(direction);
+  const controls = useRef({ move, jump, release, enterPipe });
+  controls.current = { move, jump, release, enterPipe };
+  useEffect(() => {
+    const keyDown = (event: KeyboardEvent) => {
+      if (!started || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("input, textarea, select, button, a, [contenteditable], [role='textbox'], [role='button']") || document.querySelector("dialog[open]")) return;
+      const arena = arenaRef.current;
+      if (!arena) return;
+      const rect = arena.getBoundingClientRect();
+      const visible = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+      // Resume only when the player has returned to the visible level.
+      if (visible < Math.min(rect.height * 0.4, 100)) return;
+      const key = event.key.toLowerCase();
+      if (!["arrowleft", "arrowright", "a", "d", " ", "arrowdown"].includes(key)) return;
+      event.preventDefault();
+      arena.focus({ preventScroll: true });
+      if (key === " ") {
+        if (!event.repeat) controls.current.jump();
+      } else if (key === "arrowdown") controls.current.enterPipe();
+      else controls.current.move(key === "arrowleft" || key === "a" ? "left" : "right");
+    };
+    const keyUp = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      if (["arrowleft", "a"].includes(key)) controls.current.release("left");
+      if (["arrowright", "d"].includes(key)) controls.current.release("right");
+    };
+    window.addEventListener("keydown", keyDown);
+    window.addEventListener("keyup", keyUp);
+    return () => {
+      window.removeEventListener("keydown", keyDown);
+      window.removeEventListener("keyup", keyUp);
+    };
+  }, [started, arenaRef]);
   return (
     <>
       <div
@@ -134,9 +227,9 @@ export function GameWorld({
             if (key === " " && !e.repeat) jump();
             else if (key !== " ")
               move(key === "arrowleft" || key === "a" ? "left" : "right");
-          } else if (key === "arrowdown" && physics.current.x > 860) {
+          } else if (key === "arrowdown") {
             e.preventDefault();
-            setTerminalOpen(true);
+            enterPipe();
           }
         }}
         onKeyUp={(e) => {
@@ -176,7 +269,10 @@ export function GameWorld({
             d="M65 70h25V58h50v12h25v12h20v16H45V82h20zm260 55h20v-12h50v12h25v12h15v12H305v-12h20zm690-12h25v-12h50v12h25v12h25v12H990v-12h25z"
           />
         </svg>
-        <div className="arena-inner wrap">
+        <div className="arena-inner wrap" ref={inner}>
+          <span className="coin-counter" role="status" aria-live="polite">
+            <span className="coin" aria-hidden="true" /> {t("game.coins")} {coins.length}/04
+          </span>
           <span className="spawn-label" aria-hidden="true">
             AFFAN <span>↓</span>
           </span>
@@ -186,7 +282,7 @@ export function GameWorld({
               key={world}
               style={{ left: `${BLOCKS[i] / 10}%` }}
             >
-              <span className="coin" aria-hidden="true" />
+              {burst === world && <span className="coin coin-burst" aria-hidden="true" />}
               <button
                 className={`question-block ${visited.includes(world) ? "collected" : ""} ${bumped === world ? "bump" : ""}`}
                 aria-label={`${t("world.open")} 0${i + 1}: ${t(`world.${world}`)}`}
@@ -200,6 +296,7 @@ export function GameWorld({
             </div>
           ))}
           <div
+            ref={player}
             className={`game-player ${pose.moving ? "running" : ""} ${pose.y > 0 ? "jumping" : ""}`}
             style={{
               left: `${pose.x / 10}%`,
@@ -207,10 +304,12 @@ export function GameWorld({
               transform: `translateX(-50%) scaleX(${pose.facing})`,
             }}
           >
-            <PixelCharacter pose={pose.y > 0 ? "jump" : pose.moving ? "walk" : started ? "idle" : "wave"} />
+            <PixelCharacter pose={!physics.current.grounded ? "jump" : pose.moving ? "walk" : started ? "idle" : "wave"} />
           </div>
           <button
+            ref={pipe}
             className="secret-pipe"
+            style={{ left: `${PIPE_X / 10}%` }}
             aria-label={t("terminal.open")}
             onClick={() => setTerminalOpen(true)}
           >
@@ -238,14 +337,15 @@ export function GameWorld({
           {t("game.jump")} <span>·</span> {t("game.click")}
         </p>
         <div className="touch-controls">
-          {(["left", "jump", "right"] as const).map((direction) => (
+          {(["left", "jump", "right", "down"] as const).map((direction) => (
             <button
               key={direction}
               aria-label={t(`game.${direction}`)}
               onPointerDown={(e) => {
                 e.preventDefault();
                 e.currentTarget.setPointerCapture(e.pointerId);
-                if (direction === "jump") jump();
+                if (direction === "down") enterPipe();
+                else if (direction === "jump") jump();
                 else move(direction);
               }}
               onPointerUp={() => release(direction)}
@@ -254,14 +354,15 @@ export function GameWorld({
               onKeyDown={(e) => {
                 if (["Enter", " "].includes(e.key)) {
                   e.preventDefault();
-                  if (direction === "jump") jump();
+                  if (direction === "down") enterPipe();
+                  else if (direction === "jump") jump();
                   else move(direction);
                 }
               }}
               onKeyUp={() => release(direction)}
               onBlur={() => release(direction)}
             >
-              {direction === "left" ? "←" : direction === "jump" ? "↑" : "→"}
+              {direction === "left" ? "←" : direction === "jump" ? "↑" : direction === "down" ? "↓" : "→"}
             </button>
           ))}
         </div>

@@ -614,22 +614,21 @@ button:focus-visible {
   left: 0;
   right: 0;
   height: 48px;
-  background:
-    repeating-linear-gradient(0deg, transparent 0 20px, #392a3a 20px 23px),
-    repeating-linear-gradient(90deg, #765044 0 39px, #422f3b 39px 43px);
-  border-top: 7px solid #436c4d;
+  background: #84543d url("/images/tiles/soil.svg") repeat;
+  background-size: 48px 48px;
+  image-rendering: pixelated;
   z-index: 3;
 }
 .grass {
   position: absolute;
-  top: -13px;
-  height: 9px;
+  top: 0;
+  height: 15px;
   width: 100%;
-  background: #83be73;
-  box-shadow: 0 4px #527c52;
+  background: url("/images/tiles/grass.svg") repeat-x;
+  background-size: 48px 15px;
 }
 .grass:after {
-  content: "";
+  content: none;
   position: absolute;
   top: 7px;
   left: 0;
@@ -641,6 +640,50 @@ button:focus-visible {
     transparent 8px 16px
   );
 }
+.question-block {
+  background: url("/images/tiles/block.svg") center / 100% 100%;
+  border: 0;
+  box-shadow: 3px 3px #33263a;
+  image-rendering: pixelated;
+}
+.question-block:before, .question-block:after { content: none; }
+.question-block:hover { background: url("/images/tiles/block.svg") center / 100% 100%; filter: brightness(1.15); }
+.question-block.collected { background: url("/images/tiles/used-block.svg") center / 100% 100%; box-shadow: 3px 3px #33263a; }
+.coin {
+  border: 0;
+  box-shadow: none;
+  clip-path: none;
+  background: url("/images/tiles/coin.svg") center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+}
+.coin-burst {
+  bottom: 52px;
+  z-index: 6;
+  pointer-events: none;
+  animation: coin-pop 0.8s ease-out forwards;
+}
+@keyframes coin-pop {
+  0% { transform: translateY(0) scaleX(1); opacity: 1; }
+  40% { transform: translateY(-64px) scaleX(0.4); opacity: 1; }
+  70% { transform: translateY(-48px) scaleX(1); opacity: 1; }
+  100% { transform: translateY(-32px) scaleX(0.4); opacity: 0; }
+}
+.coin-counter {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gold);
+  font-family: var(--font-pixel), "DejaVu Sans", monospace;
+  font-size: 8px;
+}
+.coin-counter .coin { position: static; width: 12px; height: 18px; }
+.secret-pipe { background: url("/images/tiles/pipe.svg") center / 100% 100% no-repeat; image-rendering: pixelated; }
+.pipe-rim, .pipe-body { display: none; }
+.pipe-label { left: auto; right: 0; transform: none; align-items: flex-end; }
+.pipe-label > span { width: 74px; text-align: center; }
 .game-controls {
   position: relative;
   display: flex;
@@ -2263,6 +2306,7 @@ kbd {
     font-size: 5px;
     bottom: 82px;
   }
+  .pipe-label > span { width: 44px; }
   .pipe-symbol {
     top: 26px;
     left: 12px;
