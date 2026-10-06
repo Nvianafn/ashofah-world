@@ -185,15 +185,16 @@ button:focus-visible {
   color: var(--purple);
   margin-left: -10px;
 }
-.brand-pixel {
-  display: grid;
-  place-items: center;
+.brand-mark {
+  display: block;
+  flex-shrink: 0;
+}
+.brand-logo {
+  display: block;
+  flex-shrink: 0;
   width: 32px;
   height: 32px;
-  background: var(--purple);
-  box-shadow: 3px 3px 0 #5b4886;
-  color: #0c0f20;
-  font-size: 18px;
+  image-rendering: pixelated;
   margin-right: 6px;
 }
 .nav-links {
@@ -1719,11 +1720,21 @@ kbd {
   color: var(--muted);
 }
 .footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-pixel), "DejaVu Sans", monospace;
   font-size: 9px;
   color: var(--cream);
 }
-.footer-brand span {
+.footer-logo {
+  display: block;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+}
+.footer-brand .footer-world {
   color: var(--purple);
 }
 .back-top {
@@ -2695,10 +2706,9 @@ kbd {
   .brand-domain {
     margin-left: -8px;
   }
-  .brand-pixel {
+  .brand-logo {
     width: 27px;
     height: 27px;
-    font-size: 16px;
     margin-right: 2px;
   }
   .nav .wrap {

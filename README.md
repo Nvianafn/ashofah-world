@@ -10,6 +10,8 @@ Explore four worlds: Player Profile, Skill Inventory, Project Quests, and Next C
 
 Font files are served locally in `public/fonts/`, with their OFL licenses included. Compilation does not download Google Fonts.
 
+The Dino Hood identity uses a green costume, warm skin for the human face, a mint belly, and cream/navy details. Its SVG and bookmark icons live in `public/images/brand/`; Next.js serves the browser and Apple touch icons from `app/icon.svg`, `app/favicon.ico`, and `app/apple-icon.png`. The web manifest uses browser mode. Character poses share the pixel maps in `lib/dino-sprites.json`, with matching downloadable sprite sheets in `public/images/dino/`.
+
 ---
 
 ## 1. Run locally

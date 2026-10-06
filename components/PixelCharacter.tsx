@@ -7,7 +7,7 @@ export function PixelCharacter({ className = "", pose = "idle" }: { className?: 
     <svg
       className={`pixel-character ${className}`}
       data-pose={pose}
-      viewBox="0 -3 16 23"
+      viewBox="0 -4.5 24 34.5"
       fill="none"
       shapeRendering="crispEdges"
       aria-hidden="true"
