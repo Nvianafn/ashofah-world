@@ -54,6 +54,6 @@ jobs:
         run: |
           az extension add --name containerapp --upgrade
           az containerapp update \
-            --namae  ashofah-web \
+            --name  ashofah-web \
             --resource-group rg-ashofah-world \
             --image ghcr.io/nvianafn/ashofah-world:sha-${{ github.sha }}
