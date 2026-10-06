@@ -1,9 +1,12 @@
 "use client";
+import { useState } from "react";
+import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { BIO, SOCIALS, L } from "@/lib/content";
 import { PixelCharacter } from "./PixelCharacter";
 export function Statement() {
   const { lang, t } = useI18n();
+  const [showPhoto, setShowPhoto] = useState(false);
   return (
     <section className="profile-world" aria-labelledby="profile-title">
       <div className="section-heading">
@@ -21,10 +24,41 @@ export function Statement() {
           </div>
           <div className="console-screen">
             <span className="screen-label">PLAYER 01</span>
-            <PixelCharacter pose="wave" />
+            <button
+              type="button"
+              className="profile-avatar-toggle"
+              aria-label={t("profile.togglePhoto")}
+              aria-pressed={showPhoto}
+              aria-describedby="profile-avatar-hint"
+              onClick={() => setShowPhoto((visible) => !visible)}
+            >
+              {showPhoto ? (
+                <Image
+                  src="/images/profile/affan.jpg"
+                  alt={`${t("profile.photo")} ${BIO.name}`}
+                  width={720}
+                  height={1280}
+                  className="profile-player-photo"
+                  unoptimized
+                />
+              ) : (
+                <PixelCharacter pose="wave" />
+              )}
+            </button>
             <span className="screen-name">AFFAN</span>
             <span className="screen-status">● {L(BIO.availability, lang)}</span>
           </div>
+          <p className="profile-avatar-hint" id="profile-avatar-hint">
+            <span className="profile-hint-mouse">
+              {t(showPhoto ? "profile.backToDino" : "profile.showPhoto")}
+            </span>
+            <span className="profile-hint-touch">
+              {t(showPhoto ? "profile.backToDinoTouch" : "profile.showPhotoTouch")}
+            </span>
+            <span className="profile-hint-keyboard">
+              {t("profile.keyboardHint")}
+            </span>
+          </p>
           <div className="console-controls">
             <span className="dpad" aria-hidden="true">
               ✚

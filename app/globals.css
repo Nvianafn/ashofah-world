@@ -932,6 +932,66 @@ kbd {
   filter: drop-shadow(5px 5px #101b2b);
   margin-top: 14px;
 }
+.profile-avatar-toggle {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  margin-top: 14px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.profile-avatar-toggle .pixel-character {
+  margin-top: 0;
+}
+.profile-avatar-toggle:focus-visible {
+  outline: 2px dashed var(--gold);
+  outline-offset: 4px;
+}
+@media (hover: hover) {
+  .profile-avatar-toggle:hover {
+    filter: brightness(1.08);
+  }
+}
+.profile-player-photo {
+  display: block;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  object-position: center 58%;
+  border: 3px solid var(--purple);
+  box-shadow: 4px 4px #101b2b;
+}
+.profile-avatar-hint {
+  margin-top: 12px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: #42365e;
+}
+.profile-hint-touch,
+.profile-hint-keyboard {
+  display: none;
+}
+@media (hover: none), (pointer: coarse) {
+  .profile-hint-mouse {
+    display: none;
+  }
+  .profile-hint-touch {
+    display: inline;
+  }
+}
+.console-screen:has(.profile-avatar-toggle:focus-visible) + .profile-avatar-hint .profile-hint-mouse,
+.console-screen:has(.profile-avatar-toggle:focus-visible) + .profile-avatar-hint .profile-hint-touch {
+  display: none;
+}
+.console-screen:has(.profile-avatar-toggle:focus-visible) + .profile-avatar-hint .profile-hint-keyboard {
+  display: inline;
+}
 .screen-name {
   font-family: var(--font-pixel), "DejaVu Sans", monospace;
   font-size: 10px;
