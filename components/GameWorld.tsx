@@ -207,7 +207,7 @@ export function GameWorld({
               transform: `translateX(-50%) scaleX(${pose.facing})`,
             }}
           >
-            <PixelCharacter />
+            <PixelCharacter pose={pose.y > 0 ? "jump" : pose.moving ? "walk" : started ? "idle" : "wave"} />
           </div>
           <button
             className="secret-pipe"

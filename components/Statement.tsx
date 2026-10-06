@@ -21,7 +21,7 @@ export function Statement() {
           </div>
           <div className="console-screen">
             <span className="screen-label">PLAYER 01</span>
-            <PixelCharacter />
+            <PixelCharacter pose="wave" />
             <span className="screen-name">AFFAN</span>
             <span className="screen-status">● {L(BIO.availability, lang)}</span>
           </div>

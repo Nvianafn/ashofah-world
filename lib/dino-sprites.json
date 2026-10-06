@@ -1,0 +1,271 @@
+{
+  "colors": {
+    "O": "#173B2B",
+    "G": "#56B870",
+    "H": "#31834B",
+    "L": "#B9E68C",
+    "S": "#F2BD95",
+    "K": "#302B35",
+    "W": "#FFF4DC"
+  },
+  "poses": {
+    "idle": [
+      {
+        "rows": [
+          ".....OOOOOO.....",
+          "....OGGGGGGO....",
+          "...OGGGGGGGGO...",
+          "..OGGGGGKGGGGO..",
+          "..OGGGGGGGGGGGGO",
+          "..OGGOOOOOOWWWO.",
+          "..OGOSSSSSSOOO..",
+          "...OSKKSSKSO....",
+          "...OSSSSSSSO....",
+          "....OOOOOOOO....",
+          "...OGGLLLLGGO...",
+          "..OGGGLLLLGGGO..",
+          ".OGOGGLLLLGOGO..",
+          ".OOOGGLLLLGOOO..",
+          "OO.OGGLLLLGO....",
+          "OGOOHGGGGGGO....",
+          ".OGHGGGGGGGO....",
+          "..OOOOOOOOOO....",
+          "...OGGO.OGGO....",
+          "...OOOO.OOOO...."
+        ],
+        "offsetY": 0
+      }
+    ],
+    "walk": [
+      {
+        "rows": [
+          ".....OOOOOO.....",
+          "....OGGGGGGO....",
+          "...OGGGGGGGGO...",
+          "..OGGGGGKGGGGO..",
+          "..OGGGGGGGGGGGGO",
+          "..OGGOOOOOOWWWO.",
+          "..OGOSSSSSSOOO..",
+          "...OSKKSSKSO....",
+          "...OSSSSSSSO....",
+          "....OOOOOOOO....",
+          "...OGGLLLLGGO...",
+          "..OGGGLLLLGGGO..",
+          ".OGOGGLLLLGOGO..",
+          ".OOOGGLLLLGOOO..",
+          "OO.OGGLLLLGO....",
+          "OGOOHGGGGGGO....",
+          ".OGHGGGGGGGO....",
+          "..OOOOOOOOOO....",
+          "..OGGGO..OGGO...",
+          "..OOOOO..OOOO..."
+        ],
+        "offsetY": 0
+      },
+      {
+        "rows": [
+          ".....OOOOOO.....",
+          "....OGGGGGGO....",
+          "...OGGGGGGGGO...",
+          "..OGGGGGKGGGGO..",
+          "..OGGGGGGGGGGGGO",
+          "..OGGOOOOOOWWWO.",
+          "..OGOSSSSSSOOO..",
+          "...OSKKSSKSO....",
+          "...OSSSSSSSO....",
+          "....OOOOOOOO....",
+          "...OGGLLLLGGO...",
+          "..OGGGLLLLGGGO..",
+          ".OGOGGLLLLGOGO..",
+          ".OOOGGLLLLGOOO..",
+          "OO.OGGLLLLGO....",
+          "OGOOHGGGGGGO....",
+          ".OGHGGGGGGGO....",
+          "..OOOOOOOOOO....",
+          "...OGGO.OGGO....",
+          "...OOOO.OOOO...."
+        ],
+        "offsetY": -1
+      },
+      {
+        "rows": [
+          ".....OOOOOO.....",
+          "....OGGGGGGO....",
+          "...OGGGGGGGGO...",
+          "..OGGGGGKGGGGO..",
+          "..OGGGGGGGGGGGGO",
+          "..OGGOOOOOOWWWO.",
+          "..OGOSSSSSSOOO..",
+          "...OSKKSSKSO....",
+          "...OSSSSSSSO....",
+          "....OOOOOOOO....",
+          "...OGGLLLLGGO...",
+          "..OGGGLLLLGGGO..",
+          ".OGOGGLLLLGOGO..",
+          ".OOOGGLLLLGOOO..",
+          "OO.OGGLLLLGO....",
+          "OGOOHGGGGGGO....",
+          ".OGHGGGGGGGO....",
+          "..OOOOOOOOOO....",
+          "....OGGO..OGGGO.",
+          "....OOOO..OOOOO."
+        ],
+        "offsetY": 0
+      },
+      {
+        "rows": [
+          ".....OOOOOO.....",
+          "....OGGGGGGO....",
+          "...OGGGGGGGGO...",
+          "..OGGGGGKGGGGO..",
+          "..OGGGGGGGGGGGGO",
+          "..OGGOOOOOOWWWO.",
+          "..OGOSSSSSSOOO..",
+          "...OSKKSSKSO....",
+          "...OSSSSSSSO....",
+          "....OOOOOOOO....",
+          "...OGGLLLLGGO...",
+          "..OGGGLLLLGGGO..",
+          ".OGOGGLLLLGOGO..",
+          ".OOOGGLLLLGOOO..",
+          "OO.OGGLLLLGO....",
+          "OGOOHGGGGGGO....",
+          ".OGHGGGGGGGO....",
+          "..OOOOOOOOOO....",
+          "...OGGO.OGGO....",
+          "...OOOO.OOOO...."
+        ],
+        "offsetY": -1
+      }
+    ],
+    "jump": [
+      {
+        "rows": [
+          ".....OOOOOO.....",
+          "....OGGGGGGO....",
+          "...OGGGGGGGGO...",
+          "..OGGGGGKGGGGO..",
+          "..OGGGGGGGGGGGGO",
+          "..OGGOOOOOOWWWO.",
+          "..OGOSSSSSSOOO..",
+          "...OSKKSSKSO....",
+          "...OSSSSSSSO....",
+          "....OOOOOOOO....",
+          "...OGGLLLLGGO...",
+          "..OGGGLLLLGGGO..",
+          ".OGOOGLLLLGOOGO.",
+          ".OO.OGLLLLGO.OO.",
+          "OO.OGGLLLLGO....",
+          "OGOOHGGGGGGO....",
+          ".OGHGGGGGGGO....",
+          "..OOOOOOOOOO....",
+          "..OOGGO..OGGOO..",
+          "..OOOO....OOOO.."
+        ],
+        "offsetY": 0
+      }
+    ],
+    "wave": [
+      {
+        "rows": [
+          ".....OOOOOO.....",
+          "....OGGGGGGO....",
+          "...OGGGGGGGGO...",
+          "..OGGGGGKGGGGO..",
+          "..OGGGGGGGGGGGGO",
+          "..OGGOOOOOOWWWO.",
+          "..OGOSSSSSSOOO..",
+          "...OSKKSSKSO.OOO",
+          "...OSSSSSSSO.OGO",
+          "....OOOOOOOO.OGO",
+          "...OGGLLLLGGOOGO",
+          "..OGGGLLLLGGOGOO",
+          ".OGOGGLLLLGO....",
+          ".OOOGGLLLLGO....",
+          "OO.OGGLLLLGO....",
+          "OGOOHGGGGGGO....",
+          ".OGHGGGGGGGO....",
+          "..OOOOOOOOOO....",
+          "...OGGO.OGGO....",
+          "...OOOO.OOOO...."
+        ],
+        "offsetY": 0
+      },
+      {
+        "rows": [
+          ".....OOOOOO.....",
+          "....OGGGGGGO....",
+          "...OGGGGGGGGO...",
+          "..OGGGGGKGGGGO..",
+          "..OGGGGGGGGGGGGO",
+          "..OGGOOOOOOWWWO.",
+          "..OGOSSSSSSOOOOO",
+          "...OSKKSSKSO.OGO",
+          "...OSSSSSSSO.OGO",
+          "....OOOOOOOO.OGO",
+          "...OGGLLLLGGOOGO",
+          "..OGGGLLLLGGOGOO",
+          ".OGOGGLLLLGO....",
+          ".OOOGGLLLLGO....",
+          "OO.OGGLLLLGO....",
+          "OGOOHGGGGGGO....",
+          ".OGHGGGGGGGO....",
+          "..OOOOOOOOOO....",
+          "...OGGO.OGGO....",
+          "...OOOO.OOOO...."
+        ],
+        "offsetY": 0
+      },
+      {
+        "rows": [
+          ".....OOOOOO.....",
+          "....OGGGGGGO....",
+          "...OGGGGGGGGO...",
+          "..OGGGGGKGGGGO..",
+          "..OGGGGGGGGGGGGO",
+          "..OGGOOOOOOWWWO.",
+          "..OGOSSSSSSOOO..",
+          "...OSKKSSKSO.OOO",
+          "...OSSSSSSSO.OGO",
+          "....OOOOOOOO.OGO",
+          "...OGGLLLLGGOOGO",
+          "..OGGGLLLLGGOGOO",
+          ".OGOGGLLLLGO....",
+          ".OOOGGLLLLGO....",
+          "OO.OGGLLLLGO....",
+          "OGOOHGGGGGGO....",
+          ".OGHGGGGGGGO....",
+          "..OOOOOOOOOO....",
+          "...OGGO.OGGO....",
+          "...OOOO.OOOO...."
+        ],
+        "offsetY": 0
+      },
+      {
+        "rows": [
+          ".....OOOOOO.....",
+          "....OGGGGGGO....",
+          "...OGGGGGGGGO...",
+          "..OGGGGGKGGGGO..",
+          "..OGGGGGGGGGGGGO",
+          "..OGGOOOOOOWWWO.",
+          "..OGOSSSSSSOOO..",
+          "...OSKKSSKSO....",
+          "...OSSSSSSSO.OOO",
+          "....OOOOOOOO.OGO",
+          "...OGGLLLLGGOOGO",
+          "..OGGGLLLLGGOGOO",
+          ".OGOGGLLLLGO....",
+          ".OOOGGLLLLGO....",
+          "OO.OGGLLLLGO....",
+          "OGOOHGGGGGGO....",
+          ".OGHGGGGGGGO....",
+          "..OOOOOOOOOO....",
+          "...OGGO.OGGO....",
+          "...OOOO.OOOO...."
+        ],
+        "offsetY": 0
+      }
+    ]
+  }
+}

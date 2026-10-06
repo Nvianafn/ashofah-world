@@ -495,16 +495,22 @@ button:focus-visible {
   display: block;
   image-rendering: pixelated;
 }
-.running .pixel-character {
-  animation: walk 0.2s steps(2) infinite;
+.dino-frame { visibility: hidden; }
+.dino-frame-0 { visibility: visible; }
+.pixel-character[data-pose="walk"] .dino-frame,
+.pixel-character[data-pose="wave"] .dino-frame {
+  animation: dino-frames 0.64s steps(1, end) infinite;
 }
-@keyframes walk {
-  50% {
-    transform: rotate(5deg) translateY(-3px);
-  }
-}
-.jumping .pixel-character {
-  transform: rotate(-5deg);
+.pixel-character[data-pose="wave"] .dino-frame { animation-duration: 1s; }
+.pixel-character[data-pose="walk"] .dino-frame-1 { animation-delay: -0.48s; }
+.pixel-character[data-pose="walk"] .dino-frame-2 { animation-delay: -0.32s; }
+.pixel-character[data-pose="walk"] .dino-frame-3 { animation-delay: -0.16s; }
+.pixel-character[data-pose="wave"] .dino-frame-1 { animation-delay: -0.75s; }
+.pixel-character[data-pose="wave"] .dino-frame-2 { animation-delay: -0.5s; }
+.pixel-character[data-pose="wave"] .dino-frame-3 { animation-delay: -0.25s; }
+@keyframes dino-frames {
+  0% { visibility: visible; }
+  25%, 100% { visibility: hidden; }
 }
 .secret-pipe {
   position: absolute;

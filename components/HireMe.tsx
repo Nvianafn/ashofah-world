@@ -19,7 +19,7 @@ export function HireMe() {
           <div className="finish-flag" aria-hidden="true">
             <span>★</span>
           </div>
-          <PixelCharacter />
+          <PixelCharacter pose="wave" />
           <div className="contact-grass" />
           <span className="contact-scene-label">{t("contact.adventure")}</span>
         </div>
