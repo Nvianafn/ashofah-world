@@ -34,9 +34,9 @@ export function Statement() {
             >
               {showPhoto ? (
                 <Image
-                  src="/images/profile/affan.jpg"
+                  src="/images/profile/affan-square.jpg"
                   alt={`${t("profile.photo")} ${BIO.name}`}
-                  width={720}
+                  width={1280}
                   height={1280}
                   className="profile-player-photo"
                   unoptimized
