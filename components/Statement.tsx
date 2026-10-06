@@ -22,7 +22,7 @@ export function Statement() {
             <span>ASHOFAH®</span>
             <span>PLAYER EDITION</span>
           </div>
-          <div className="console-screen">
+          <div className={`console-screen${showPhoto ? " console-screen--photo" : ""}`}>
             <span className="screen-label">PLAYER 01</span>
             <button
               type="button"

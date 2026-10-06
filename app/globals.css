@@ -958,12 +958,20 @@ kbd {
 }
 .profile-player-photo {
   display: block;
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  object-position: center 58%;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
   border: 3px solid var(--purple);
   box-shadow: 4px 4px #101b2b;
+}
+.console-screen.console-screen--photo {
+  height: auto;
+  padding: 32px 10px 16px;
+}
+.console-screen--photo .profile-avatar-toggle {
+  width: 100%;
+  height: auto;
+  margin-top: 0;
 }
 .profile-avatar-hint {
   margin-top: 12px;
